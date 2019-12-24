@@ -6,23 +6,38 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.FragmentManager
+import androidx.viewpager.widget.ViewPager
 import com.afollestad.date.dayOfMonth
 import com.afollestad.date.month
 import com.afollestad.date.year
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.datetime.datePicker
+import com.deemiensa.dewormingmanager.adapter.ViewPagerAdapter
+import com.google.android.material.tabs.TabLayout
 
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    var dateDewormerTaken: String? = null
+    private var dateDewormerTaken: String? = null
+    private lateinit var viewPager: ViewPager
+    private lateinit var tabs: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        // initializing the viewpager
+        viewPager = findViewById(R.id.viewpager_main)
+        tabs = findViewById(R.id.profile_tabs)
+
+        // setting up the viewpager adapter
+//        val fragmentAdapter = ViewPagerAdapter(childFragmentManager)
+//        viewPager.adapter = fragmentAdapter
+//        tabs.setupWithViewPager(viewPager)
 
         fab.setOnClickListener {openCalenderDialog()}
     }

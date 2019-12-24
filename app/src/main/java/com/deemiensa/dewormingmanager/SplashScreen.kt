@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.deemiensa.dewormingmanager.viewpager.Dewormer
 
 class SplashScreen : AppCompatActivity() {
 
@@ -13,7 +14,7 @@ class SplashScreen : AppCompatActivity() {
     private val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
 
-            val intent = Intent(applicationContext, MainActivity::class.java)
+            val intent = Intent(applicationContext, Dewormer::class.java)
             startActivity(intent)
             finish()
         }
