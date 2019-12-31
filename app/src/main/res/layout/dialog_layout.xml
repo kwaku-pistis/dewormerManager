@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/action_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="take dewormer"
+            tools:ignore="HardcodedText"
+            android:visibility="gone"
+            android:textAllCaps="true"
+            android:textSize="26sp"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/action_tv_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please select the date on which you are deworming"
+            android:textSize="18sp"
+            android:layout_gravity="center"/>
+
+        <EditText
+            android:id="@+id/deworm_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Date &amp; Time"
+            android:drawableLeft="@drawable/ic_action_date_black"
+            android:drawableStart="@drawable/ic_action_date_black"
+            android:drawablePadding="10dp"
+            android:enabled="true"
+            android:layout_marginTop="20dp"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
