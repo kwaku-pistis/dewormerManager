@@ -1,5 +1,6 @@
 package com.deemiensa.dewormingmanager.viewpager
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -11,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentTransaction
 import com.afollestad.date.dayOfMonth
 import com.afollestad.date.month
@@ -23,6 +25,11 @@ import com.deemiensa.dewormingmanager.R
 import com.deemiensa.dewormingmanager.offline.SharedPref
 import com.deemiensa.dewormingmanager.pagerFragments.TakeMed
 import com.deemiensa.dewormingmanager.viewpager.ui.main.SectionsPagerAdapter
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.*
 
 class Dewormer : AppCompatActivity() {
 
@@ -31,6 +38,7 @@ class Dewormer : AppCompatActivity() {
     private var dialog_view: View? = null
     private lateinit var sharedPref: SharedPref
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dewormer)
@@ -76,6 +84,7 @@ class Dewormer : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun openCalenderDialog(){
         //val dialog = MaterialDialog.Builder(this).title("Date of deworming")
         MaterialDialog(this).show { datePicker { dialog, datetime ->
@@ -83,9 +92,18 @@ class Dewormer : AppCompatActivity() {
             val month = datetime.month + 1
             val day = datetime.dayOfMonth
 
+            val dayName = SimpleDateFormat("EEEE")
+            val name = dayName.format(datetime.firstDayOfWeek)
+            Log.d("DATE", name)
+
             dateDewormerTaken = "$day-$month-$yr"
 
-            dewormDate.setText(dateDewormerTaken)
+            dewormDate.setText(datetime.time.toString())
+
+//            val date = LocalDate.of(datetime.year, datetime.month + 1, datetime.dayOfMonth)
+//            val nextDate = date.plusDays(90)
+//
+//            Log.d("NEXT DATE", nextDate.toString())
         }
         }
     }
