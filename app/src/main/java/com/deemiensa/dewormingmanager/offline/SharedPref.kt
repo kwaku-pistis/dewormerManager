@@ -24,6 +24,14 @@ constructor (context: Context) {
         get() = pref.getString("last_taken", "")
         set(value) = editor.putString("last_taken", value).apply()
 
+    var unFormattedNextDate: String?
+        get() = pref.getString("unf_next_date", "")
+        set(value) = editor.putString("unf_next_date", value).apply()
+
+    var nextDate: String?
+        get() = pref.getString("next_date", "")
+        set(value) = editor.putString("next_date", value).apply()
+
     companion object{
         private const val PREF_NAME = "Deworming Manager"
     }
