@@ -1,11 +1,16 @@
 package com.deemiensa.dewormingmanager
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.afollestad.date.dayOfMonth
@@ -70,5 +75,26 @@ class MainActivity : AppCompatActivity() {
                 Log.d("DATE", dateDewormerTaken)
             }
         }
+    }
+
+
+    private fun triggerAlarm(){
+        // Get AlarmManager instance
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Intent part
+        val intent = Intent(this, AlarmReceiver::class.java)
+        intent.action = "FOO_ACTION"
+        intent.putExtra("KEY_FOO_STRING", "Medium AlarmManager Demo")
+
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+
+        // Alarm time
+        val ALARM_DELAY_IN_SECOND = 10
+        val alarmTimeAtUTC = System.currentTimeMillis() + ALARM_DELAY_IN_SECOND * 1_000L
+
+        // Set with system Alarm Service
+        // Other possible functions: setExact() / setRepeating() / setWindow(), etc
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeAtUTC, pendingIntent)
     }
 }
