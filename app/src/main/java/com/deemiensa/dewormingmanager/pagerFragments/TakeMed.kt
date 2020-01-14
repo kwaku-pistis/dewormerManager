@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.afollestad.date.dayOfMonth
 import com.afollestad.date.month
@@ -22,7 +21,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.datetime.datePicker
-import com.deemiensa.dewormingmanager.AlarmReceiver
+import com.deemiensa.dewormingmanager.activities.AlarmReceiver
 import com.deemiensa.dewormingmanager.R
 import com.deemiensa.dewormingmanager.offline.SharedPref
 import com.github.mikephil.charting.animation.Easing

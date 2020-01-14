@@ -1,9 +1,10 @@
-package com.deemiensa.dewormingmanager
+package com.deemiensa.dewormingmanager.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.deemiensa.dewormingmanager.R
 import com.deemiensa.dewormingmanager.viewpager.Dewormer
 
 class SplashScreen : AppCompatActivity() {

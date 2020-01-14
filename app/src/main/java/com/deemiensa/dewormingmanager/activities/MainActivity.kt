@@ -1,4 +1,4 @@
-package com.deemiensa.dewormingmanager
+package com.deemiensa.dewormingmanager.activities
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -6,23 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.afollestad.date.dayOfMonth
 import com.afollestad.date.month
 import com.afollestad.date.year
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.datetime.datePicker
-import com.deemiensa.dewormingmanager.adapter.ViewPagerAdapter
+import com.deemiensa.dewormingmanager.R
 import com.google.android.material.tabs.TabLayout
 
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 

@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
-import com.deemiensa.dewormingmanager.AlarmReceiver
+import com.deemiensa.dewormingmanager.activities.AlarmReceiver
 import com.deemiensa.dewormingmanager.R
 import com.deemiensa.dewormingmanager.offline.SharedPref
 import com.deemiensa.dewormingmanager.viewpager.ui.main.SectionsPagerAdapter
@@ -25,10 +25,9 @@ class Dewormer : AppCompatActivity() {
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = this.findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
-        tabs.getTabAt(0)!!.icon = getDrawable(R.drawable.ic_action_dashboard_white)
-        tabs.tabIconTint = getColorStateList(R.color.colorWhite)
-        //tabs.getTabAt(0)!!.setIcon(R.drawable.ic_action_dashboard_white)
+        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_action_dashboard_white)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_action_history_white)
+        tabs.tabIconTint = getColorStateList(R.color.colorWhite)
 
         sharedPref = SharedPref(this)
         cancelAlarm()

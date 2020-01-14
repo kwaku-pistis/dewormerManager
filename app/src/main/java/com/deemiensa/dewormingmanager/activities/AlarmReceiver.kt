@@ -1,4 +1,4 @@
-package com.deemiensa.dewormingmanager
+package com.deemiensa.dewormingmanager.activities
 
 import android.app.Notification
 import android.app.NotificationChannel
