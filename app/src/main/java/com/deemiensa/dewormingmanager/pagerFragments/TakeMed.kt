@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import androidx.room.Room
 import com.afollestad.date.dayOfMonth
 import com.afollestad.date.month
 import com.afollestad.date.year
@@ -23,7 +25,10 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.datetime.datePicker
 import com.deemiensa.dewormingmanager.activities.AlarmReceiver
 import com.deemiensa.dewormingmanager.R
+import com.deemiensa.dewormingmanager.offline.AppDatabase
+import com.deemiensa.dewormingmanager.offline.DatabaseInfo
 import com.deemiensa.dewormingmanager.offline.SharedPref
+import com.deemiensa.dewormingmanager.viewpager.ui.main.PageViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -32,6 +37,9 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate.COLORFUL_COLORS
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_take_med.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.jetbrains.anko.doAsync
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
@@ -53,6 +61,8 @@ class TakeMed : Fragment() {
 
     var formattedDate: String? = null
     var notificationId = 0
+    private lateinit var db: AppDatabase
+    private lateinit var model: PageViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +71,15 @@ class TakeMed : Fragment() {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_take_med, container, false)
 
-        val fab: FloatingActionButton = root.findViewById(R.id.fab)
+        model = ViewModelProviders.of(activity!!).get(PageViewModel::class.java)
+
+        // accessing the history database
+        db = Room.databaseBuilder(
+            context!!,
+            AppDatabase::class.java, "history-list.db"
+        ).build()
+
+        val fab: FloatingActionButton = root!!.findViewById(R.id.fab)
 
         fab.setOnClickListener {
             /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -177,7 +195,10 @@ class TakeMed : Fragment() {
         last_taken_tv_2.text = dewormDate.text.toString()
         next_taken_tv_2.text = formattedDate
         loadPieChart()
-//        newInstance()
+
+        doAsync {
+            model.insert(DatabaseInfo(0, dewormDate.text.toString(), formattedDate.toString()))
+        }
     }
 
     private fun openCalenderDialog(){
@@ -208,6 +229,12 @@ class TakeMed : Fragment() {
             Log.d("NEXT DATE", nextDate.toString())
             sharedPref.nextDate = formattedDate.toString()
         }
+        }
+    }
+
+    private fun insertIntoDB(nowDate: String, nextDate: String){
+        GlobalScope.launch {
+            db.databaseOperations().insertAll(DatabaseInfo(0, nowDate, nextDate))
         }
     }
 

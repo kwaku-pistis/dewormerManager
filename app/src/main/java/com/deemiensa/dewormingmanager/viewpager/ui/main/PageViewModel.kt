@@ -1,19 +1,22 @@
 package com.deemiensa.dewormingmanager.viewpager.ui.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import android.app.Application
+import androidx.lifecycle.*
+import androidx.room.Room
+import com.deemiensa.dewormingmanager.offline.AppDatabase
+import com.deemiensa.dewormingmanager.offline.DatabaseInfo
+import com.deemiensa.dewormingmanager.offline.DatabaseOperations
 
-class PageViewModel : ViewModel() {
+class PageViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _index = MutableLiveData<Int>()
-    val text: LiveData<String> = Transformations.map(_index) {
-        "Hello world from section: $it"
-    }
+    private val db: AppDatabase = Room.databaseBuilder(
+        application,
+        AppDatabase::class.java, "history-list.db"
+    ).build()
 
-    fun setIndex(index: Int) {
-        _index.value = index
+    internal val allData: LiveData<List<DatabaseInfo>> = db.databaseOperations().getAll()
+
+    fun insert(databaseInfo: DatabaseInfo){
+        db.databaseOperations().insertAll(databaseInfo)
     }
 }

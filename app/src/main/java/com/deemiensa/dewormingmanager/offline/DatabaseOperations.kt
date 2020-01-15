@@ -1,19 +1,22 @@
 package com.deemiensa.dewormingmanager.offline
 
-import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
+import androidx.lifecycle.LiveData
+import androidx.room.*
 
-class DatabaseOperations(context: Context) : SQLiteOpenHelper(context, DatabaseInfo.DatabaseVariables.DATABASE_NAME, null, database_version) {
+@Dao
+interface DatabaseOperations{
+    @Query("SELECT * from history ORDER BY id DESC")
+    fun getAll(): LiveData<List<DatabaseInfo>>
 
-    override fun onCreate(p0: SQLiteDatabase?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    @Query("SELECT * FROM history WHERE date_taken LIKE :date")
+    fun findByDate(date: String): DatabaseInfo
 
-    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-    }
+    @Insert
+    fun insertAll(vararg todo: DatabaseInfo)
 
-    companion object {
-        private const val database_version = 1
-    }
+    @Delete
+    fun delete(todo: DatabaseInfo)
+
+    @Update
+    fun updateHistory(vararg todos: DatabaseInfo)
 }

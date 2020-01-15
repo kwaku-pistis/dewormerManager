@@ -1,18 +1,12 @@
 package com.deemiensa.dewormingmanager.offline
 
-import android.provider.BaseColumns
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-class DatabaseInfo internal constructor(){
-
-    internal abstract class DatabaseVariables : BaseColumns{
-
-        companion object{
-            const val DATABASE_NAME = "offline_storage"
-
-            const val TABLE_DEWORM = "table_deworm"
-            const val ID =  "id"
-            const val DATE_TAKEN = "date_taken"
-            const val NEXT_DATE = "next_date"
-        }
-    }
-}
+@Entity(tableName = "history")
+data class DatabaseInfo(
+    @PrimaryKey(autoGenerate = true) var id: Int,
+    @ColumnInfo(name = "date_taken") var date_taken: String,
+    @ColumnInfo(name = "next_date") var next_date: String
+)
