@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,8 +24,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.datetime.datePicker
-import com.deemiensa.dewormingmanager.activities.AlarmReceiver
 import com.deemiensa.dewormingmanager.R
+import com.deemiensa.dewormingmanager.activities.AlarmReceiver
 import com.deemiensa.dewormingmanager.offline.AppDatabase
 import com.deemiensa.dewormingmanager.offline.DatabaseInfo
 import com.deemiensa.dewormingmanager.offline.SharedPref
@@ -40,8 +41,8 @@ import kotlinx.android.synthetic.main.fragment_take_med.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
+import org.joda.time.LocalDate
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 
 
@@ -220,7 +221,7 @@ class TakeMed : Fragment() {
             val nowDate = dateFormat.format(datetime.time)
             dewormDate.setText(nowDate)
 
-            val date = LocalDate.of(datetime.year, datetime.month + 1, datetime.dayOfMonth)
+            val date = LocalDate(datetime.year, datetime.month + 1, datetime.dayOfMonth)
             sharedPref.lastdatetaken = date.toString()
             val nextDate = date.plusDays(90)
             val parsedDate = parseDate.parse(nextDate.toString())
@@ -256,7 +257,11 @@ class TakeMed : Fragment() {
 
         // Set with system Alarm Service
         // Other possible functions: setExact() / setRepeating() / setWindow(), etc
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeAtUTC, pendingIntent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeAtUTC, pendingIntent)
+        } else{
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTimeAtUTC, pendingIntent)
+        }
     }
 
     val requestCode = 0

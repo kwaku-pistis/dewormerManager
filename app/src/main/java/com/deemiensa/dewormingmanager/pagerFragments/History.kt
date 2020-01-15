@@ -9,13 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.deemiensa.dewormingmanager.R
-import com.deemiensa.dewormingmanager.offline.AppDatabase
 import com.deemiensa.dewormingmanager.viewpager.ui.main.PageViewModel
 import com.deemiensa.dewormingmanager.viewpager.ui.main.RecyclerViewAdapter
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class History : Fragment() {
 

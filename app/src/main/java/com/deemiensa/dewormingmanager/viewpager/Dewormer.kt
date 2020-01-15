@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -27,7 +28,11 @@ class Dewormer : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
         tabs.getTabAt(0)!!.setIcon(R.drawable.ic_action_dashboard_white)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_action_history_white)
-        tabs.tabIconTint = getColorStateList(R.color.colorWhite)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            tabs.tabIconTint = getColorStateList(R.color.colorWhite)
+        } else{
+            tabs.setTabIconTintResource(R.color.colorWhite)
+        }
 
         sharedPref = SharedPref(this)
         cancelAlarm()
