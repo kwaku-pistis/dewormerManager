@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.room.Room
@@ -44,6 +46,7 @@ import org.jetbrains.anko.doAsync
 import org.joda.time.LocalDate
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 
 
 /**
@@ -55,6 +58,7 @@ class TakeMed : Fragment() {
     private lateinit var nextDewormDate: TextView
     private lateinit var sharedPref: SharedPref
     private lateinit var pieChart: PieChart
+    private lateinit var textView: TextView
 
     private lateinit var dewormDate: EditText
     private var dateDewormerTaken: String? = null
@@ -108,6 +112,8 @@ class TakeMed : Fragment() {
         nextDewormDate = root.findViewById(R.id.next_taken_tv_2)
         nextDewormDate.text = sharedPref.nextDate
 
+        textView = root.findViewById(R.id.tv1)
+
         pieChart = root.findViewById(R.id.pie_chart)
         loadPieChart()
 
@@ -147,6 +153,9 @@ class TakeMed : Fragment() {
         pieChart.animateY(1000, Easing.EaseInOutCirc)
 
         if (daysLeft >= 0){
+            pieChart.isVisible = true
+            textView.isVisible = false
+
             val pieValues = arrayListOf<PieEntry>()
             pieValues.add(PieEntry(daysLeft.toFloat(),  "days more"))
             pieValues.add(PieEntry(daysPast.toFloat(), "days past"))
@@ -180,8 +189,12 @@ class TakeMed : Fragment() {
 
             Log.d("DAYS LEFT", days.toString())
 
-            if (days.toInt() < 1){
+            if (days.absoluteValue.toInt() < 1){
                 triggerAlarm()
+            } else if (days.toInt() < 0){
+                textView.isVisible = true
+                textView.text = "Days for taking your med is way past. Please make sure you re-take your med ASAP"
+                pieChart.isVisible = false
             }
 
             //return (days.toDouble() / total_days.toDouble()) * 100.00
