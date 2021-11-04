@@ -2,11 +2,13 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
+apply plugin: 'kotlin-android-extensions'
+
 apply plugin: "kotlin-kapt"
 
 android {
     compileSdkVersion 31
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.deemiensa.dewormingmanager"
         minSdkVersion 19
@@ -14,6 +16,7 @@ android {
         versionCode 1
         versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
     buildTypes {
         release {
@@ -54,6 +57,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     kapt "androidx.room:room-compiler:$room_version"
+
+    // multidex
+    implementation "androidx.multidex:multidex:2.0.1"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

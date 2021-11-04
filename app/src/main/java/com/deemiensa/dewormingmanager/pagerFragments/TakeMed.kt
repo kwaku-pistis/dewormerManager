@@ -76,11 +76,11 @@ class TakeMed : Fragment() {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_take_med, container, false)
 
-        model = ViewModelProviders.of(activity!!).get(PageViewModel::class.java)
+        model = ViewModelProviders.of(requireActivity()).get(PageViewModel::class.java)
 
         // accessing the history database
         db = Room.databaseBuilder(
-            context!!,
+            requireContext(),
             AppDatabase::class.java, "history-list.db"
         ).build()
 
@@ -91,7 +91,7 @@ class TakeMed : Fragment() {
                 .setAction("Action", null).show()*/
 
             // show a dialog for user to select date
-            val dialog = MaterialDialog(context!!).title(text = "TAKE DEWORMER")
+            val dialog = MaterialDialog(requireContext()).title(text = "TAKE DEWORMER")
                 .customView(R.layout.dialog_layout)
                 .positiveButton(text = "DONE") { takeDewormDate() }
                 .negativeButton(text = "CANCEL") {dialog -> dialog.dismiss()}
@@ -104,7 +104,7 @@ class TakeMed : Fragment() {
             dialog.show()
         }
 
-        sharedPref = SharedPref(context!!)
+        sharedPref = SharedPref(requireContext())
 
         lastDate = root.findViewById(R.id.last_taken_tv_2)
         lastDate.text = sharedPref.datetaken
@@ -217,7 +217,7 @@ class TakeMed : Fragment() {
 
     private fun openCalenderDialog(){
         //val dialog = MaterialDialog.Builder(this).title("Date of deworming")
-        MaterialDialog(context!!).show { datePicker { dialog, datetime ->
+        MaterialDialog(requireContext()).show { datePicker { dialog, datetime ->
             val yr = datetime.year
             val month = datetime.month + 1
             val day = datetime.dayOfMonth

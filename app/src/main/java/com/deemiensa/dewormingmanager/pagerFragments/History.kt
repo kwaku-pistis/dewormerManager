@@ -26,7 +26,7 @@ class History : Fragment() {
         val root = inflater.inflate(R.layout.fragment_history, container, false)
 
         recyclerView = root.findViewById(R.id.history_recyclerView)
-        model = ViewModelProviders.of(activity!!).get(PageViewModel::class.java)
+        model = ViewModelProviders.of(requireActivity()).get(PageViewModel::class.java)
 
         // Specify layout for recycler view
         val linearLayoutManager = LinearLayoutManager(
@@ -34,7 +34,7 @@ class History : Fragment() {
         recyclerView.layoutManager = linearLayoutManager
 
         // observe the model
-        model.allData.observe(activity!!, Observer { data ->
+        model.allData.observe(requireActivity(), Observer { data ->
             // data bind the recycler view
             recyclerView.adapter = RecyclerViewAdapter(data)
         })

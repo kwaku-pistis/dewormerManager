@@ -6,7 +6,8 @@ buildscript {
     ext.room_version = '2.3.0'
     repositories {
         google()
-        mavenCentral()
+//        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.3'
@@ -19,7 +20,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-
+        jcenter()
         maven { url 'https://jitpack.io' }
     }
 }
