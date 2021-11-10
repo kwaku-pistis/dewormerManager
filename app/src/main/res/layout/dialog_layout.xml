@@ -38,7 +38,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Date &amp; Time"
-            android:drawableLeft="@drawable/ic_action_date_black"
             android:drawableStart="@drawable/ic_action_date_black"
             android:drawableTint="@color/colorAccent"
             android:drawablePadding="10dp"

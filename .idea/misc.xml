@@ -3,7 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/layout/fragment_take_med.xml" value="0.1634963768115942" />
+        <entry key="app/src/main/res/layout/activity_dewormer.xml" value="0.1585144927536232" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1585144927536232" />
+        <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.1585144927536232" />
+        <entry key="app/src/main/res/layout/content_main.xml" value="0.1585144927536232" />
+        <entry key="app/src/main/res/layout/dialog_layout.xml" value="0.1585144927536232" />
+        <entry key="app/src/main/res/layout/fragment_dewormer.xml" value="0.1585144927536232" />
+        <entry key="app/src/main/res/layout/fragment_history.xml" value="0.1585144927536232" />
+        <entry key="app/src/main/res/layout/fragment_take_med.xml" value="0.2" />
       </map>
     </option>
   </component>

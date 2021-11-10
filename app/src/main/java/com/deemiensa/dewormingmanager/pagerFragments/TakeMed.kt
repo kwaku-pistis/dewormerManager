@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +16,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.afollestad.date.dayOfMonth
 import com.afollestad.date.month
@@ -40,8 +39,6 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate.COLORFUL_COLORS
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_take_med.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
 import org.joda.time.LocalDate
 import java.text.SimpleDateFormat
@@ -61,7 +58,8 @@ class TakeMed : Fragment() {
     private lateinit var textView: TextView
 
     private lateinit var dewormDate: EditText
-    private var dateDewormerTaken: String? = null
+    private var localeDate: LocalDate? = null
+    private var defaultDate: Date? = null
     private var dialog_view: View? = null
 
     var formattedDate: String? = null
@@ -72,11 +70,11 @@ class TakeMed : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_take_med, container, false)
 
-        model = ViewModelProviders.of(requireActivity()).get(PageViewModel::class.java)
+        model = ViewModelProvider(requireActivity())[PageViewModel::class.java]
 
         // accessing the history database
         db = Room.databaseBuilder(
@@ -93,13 +91,19 @@ class TakeMed : Fragment() {
             // show a dialog for user to select date
             val dialog = MaterialDialog(requireContext()).title(text = "TAKE DEWORMER")
                 .customView(R.layout.dialog_layout)
-                .positiveButton(text = "DONE") { takeDewormDate() }
+                .positiveButton(text = "DONE") { saveToSharedPrefAndDB(localeDate) }
                 .negativeButton(text = "CANCEL") {dialog -> dialog.dismiss()}
 
             dialog_view = dialog.getCustomView()
 
             dewormDate = dialog_view!!.findViewById(R.id.deworm_date)
-            dewormDate.setOnClickListener { openCalenderDialog() }
+            // set the current date
+            val dateFormat = SimpleDateFormat("EEE, d MMM yyyy", Locale.UK)
+            defaultDate = Calendar.getInstance().time
+            dewormDate.setText(dateFormat.format(defaultDate!!))
+            dewormDate.setOnClickListener {
+                localeDate = openCalenderDialog()
+            }
 
             dialog.show()
         }
@@ -176,7 +180,7 @@ class TakeMed : Fragment() {
     private fun calculateDays(): Long {
         val currentDate = Date()
 
-        val parseDate = SimpleDateFormat("yyyy-MM-dd")
+        val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
         val date = sharedPref.unFormattedNextDate
 
         if (!date.isNullOrEmpty()){
@@ -204,10 +208,41 @@ class TakeMed : Fragment() {
         return 0
     }
 
-    private fun takeDewormDate(){
-        sharedPref.datetaken = dewormDate.text.toString()
+    private fun saveToSharedPrefAndDB(date: LocalDate?) {
+        if (date != null) {
+            val dateFormat = SimpleDateFormat("EEE, d MMM yyyy", Locale.UK)
+            val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
+            val nextDate = date.plusDays(90)
+            val parsedDate = parseDate.parse(nextDate.toString())
+
+            formattedDate = dateFormat.format(parsedDate!!)
+            Log.d("NEXT DATE", nextDate.toString())
+
+            sharedPref.nextDate = formattedDate
+            sharedPref.unFormattedNextDate = nextDate.toString()
+            sharedPref.lastdatetaken = date.toString()
+            sharedPref.datetaken = dewormDate.text.toString()
+        } else {
+            val dateFormat = SimpleDateFormat("EEE, d MMM yyyy", Locale.UK)
+            val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
+
+            // convert date text to local date
+            val localDate = LocalDate(defaultDate)
+            val nextDate = localDate.plusDays(90)
+            val parsedDate = parseDate.parse(nextDate.toString())
+
+            formattedDate = dateFormat.format(parsedDate!!)
+
+            sharedPref.nextDate = formattedDate
+            sharedPref.unFormattedNextDate = nextDate.toString()
+            sharedPref.lastdatetaken = localDate.toString()
+            sharedPref.datetaken = dewormDate.text.toString()
+        }
+
+        // show values in views
         last_taken_tv_2.text = dewormDate.text.toString()
         next_taken_tv_2.text = formattedDate
+
         loadPieChart()
 
         doAsync {
@@ -215,41 +250,27 @@ class TakeMed : Fragment() {
         }
     }
 
-    private fun openCalenderDialog(){
-        //val dialog = MaterialDialog.Builder(this).title("Date of deworming")
+    private fun openCalenderDialog(): LocalDate {
+        var date: LocalDate = LocalDate.now()
         MaterialDialog(requireContext()).show { datePicker { dialog, datetime ->
-            val yr = datetime.year
+            /*val yr = datetime.year
             val month = datetime.month + 1
-            val day = datetime.dayOfMonth
+            val day = datetime.dayOfMonth*/
 
-            val dateFormat = SimpleDateFormat("EEE, d MMM yyyy")
-            val parseDate = SimpleDateFormat("yyyy-MM-dd")
+            val dateFormat = SimpleDateFormat("EEE, d MMM yyyy", Locale.UK)
+//            val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
 
-            dateDewormerTaken = "$yr-$month-$day"
-            val unf_date = parseDate.parse(dateDewormerTaken)
+//            dateDewormerTaken = "$yr-$month-$day"
+//            val unf_date = parseDate.parse(dateDewormerTaken)
 
 //            val name = dateFormat.format(dateDewormerTaken)
-            Log.d("DATE", unf_date!!.toString())
+//            Log.d("DATE", unf_date!!.toString())
+            dewormDate.setText(dateFormat.format(datetime.time))
 
-            val nowDate = dateFormat.format(datetime.time)
-            dewormDate.setText(nowDate)
-
-            val date = LocalDate(datetime.year, datetime.month + 1, datetime.dayOfMonth)
-            sharedPref.lastdatetaken = date.toString()
-            val nextDate = date.plusDays(90)
-            val parsedDate = parseDate.parse(nextDate.toString())
-            sharedPref.unFormattedNextDate = nextDate.toString()
-            formattedDate = dateFormat.format(parsedDate!!)
-            Log.d("NEXT DATE", nextDate.toString())
-            sharedPref.nextDate = formattedDate.toString()
+            date = LocalDate(datetime.year, datetime.month + 1, datetime.dayOfMonth)
         }
         }
-    }
-
-    private fun insertIntoDB(nowDate: String, nextDate: String){
-        GlobalScope.launch {
-            db.databaseOperations().insertAll(DatabaseInfo(0, nowDate, nextDate))
-        }
+        return date
     }
 
     private fun triggerAlarm(){

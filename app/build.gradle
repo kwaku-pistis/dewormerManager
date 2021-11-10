@@ -11,7 +11,7 @@ android {
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.deemiensa.dewormingmanager"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
         versionName "1.0.1"
@@ -50,6 +50,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.0'
     implementation 'net.danlew:android.joda:2.10.3'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
 
     // room dependencies
     implementation "androidx.room:room-runtime:$room_version"

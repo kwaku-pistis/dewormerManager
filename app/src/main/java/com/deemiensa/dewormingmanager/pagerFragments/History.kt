@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deemiensa.dewormingmanager.R
@@ -26,7 +26,7 @@ class History : Fragment() {
         val root = inflater.inflate(R.layout.fragment_history, container, false)
 
         recyclerView = root.findViewById(R.id.history_recyclerView)
-        model = ViewModelProviders.of(requireActivity()).get(PageViewModel::class.java)
+        model = ViewModelProvider(requireActivity())[PageViewModel::class.java]
 
         // Specify layout for recycler view
         val linearLayoutManager = LinearLayoutManager(
