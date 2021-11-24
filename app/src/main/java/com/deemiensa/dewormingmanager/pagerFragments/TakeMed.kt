@@ -3,6 +3,9 @@ package com.deemiensa.dewormingmanager.pagerFragments
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -30,6 +33,7 @@ import com.deemiensa.dewormingmanager.activities.AlarmReceiver
 import com.deemiensa.dewormingmanager.offline.AppDatabase
 import com.deemiensa.dewormingmanager.offline.DatabaseInfo
 import com.deemiensa.dewormingmanager.offline.SharedPref
+import com.deemiensa.dewormingmanager.services.NotificationScheduler
 import com.deemiensa.dewormingmanager.viewpager.ui.main.PageViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -42,6 +46,7 @@ import kotlinx.android.synthetic.main.fragment_take_med.*
 import org.jetbrains.anko.doAsync
 import org.joda.time.LocalDate
 import java.text.SimpleDateFormat
+import java.time.ZoneId
 import java.util.*
 import kotlin.math.absoluteValue
 
@@ -67,6 +72,10 @@ class TakeMed : Fragment() {
     private lateinit var db: AppDatabase
     private lateinit var model: PageViewModel
 
+    private lateinit var mScheduler: JobScheduler
+    private val JOB_ID: Int = 0
+    private val ONE_DAY_INTERVAL = 24 * 60 * 60 * 1000L // 1 Day
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -75,6 +84,7 @@ class TakeMed : Fragment() {
         val root = inflater.inflate(R.layout.fragment_take_med, container, false)
 
         model = ViewModelProvider(requireActivity())[PageViewModel::class.java]
+        mScheduler = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
         // accessing the history database
         db = Room.databaseBuilder(
@@ -179,11 +189,12 @@ class TakeMed : Fragment() {
 
     private fun calculateDays(): Long {
         val currentDate = Date()
+//        val dateTaken = sharedPref.lastdatetaken
 
         val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
         val date = sharedPref.unFormattedNextDate
 
-        if (!date.isNullOrEmpty()){
+        if (!date.isNullOrEmpty()) {
             val nextDate = parseDate.parse(date)
             val diff: Long = nextDate!!.time - currentDate.time
             val seconds = diff / 1000
@@ -193,11 +204,9 @@ class TakeMed : Fragment() {
 
             Log.d("DAYS LEFT", days.toString())
 
-            if (days.absoluteValue.toInt() < 1){
-                triggerAlarm()
-            } else if (days.toInt() < 0){
+            if (days.toInt() < 0){
                 textView.isVisible = true
-                textView.text = "Days for taking your med is way past. Please make sure you re-take your med ASAP"
+                textView.text = "Please take your next dewormer drug"
                 pieChart.isVisible = false
             }
 
@@ -212,7 +221,8 @@ class TakeMed : Fragment() {
         if (date != null) {
             val dateFormat = SimpleDateFormat("EEE, d MMM yyyy", Locale.UK)
             val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
-            val nextDate = date.plusDays(90)
+//            val nextDate = date.plusDays(90)
+            val nextDate = date.plusDays(2)
             val parsedDate = parseDate.parse(nextDate.toString())
 
             formattedDate = dateFormat.format(parsedDate!!)
@@ -228,7 +238,7 @@ class TakeMed : Fragment() {
 
             // convert date text to local date
             val localDate = LocalDate(defaultDate)
-            val nextDate = localDate.plusDays(90)
+            val nextDate = localDate.plusDays(2)
             val parsedDate = parseDate.parse(nextDate.toString())
 
             formattedDate = dateFormat.format(parsedDate!!)
@@ -244,6 +254,7 @@ class TakeMed : Fragment() {
         next_taken_tv_2.text = formattedDate
 
         loadPieChart()
+        scheduleJob()
 
         doAsync {
             model.insert(DatabaseInfo(0, dewormDate.text.toString(), formattedDate.toString()))
@@ -253,18 +264,7 @@ class TakeMed : Fragment() {
     private fun openCalenderDialog(): LocalDate {
         var date: LocalDate = LocalDate.now()
         MaterialDialog(requireContext()).show { datePicker { dialog, datetime ->
-            /*val yr = datetime.year
-            val month = datetime.month + 1
-            val day = datetime.dayOfMonth*/
-
             val dateFormat = SimpleDateFormat("EEE, d MMM yyyy", Locale.UK)
-//            val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
-
-//            dateDewormerTaken = "$yr-$month-$day"
-//            val unf_date = parseDate.parse(dateDewormerTaken)
-
-//            val name = dateFormat.format(dateDewormerTaken)
-//            Log.d("DATE", unf_date!!.toString())
             dewormDate.setText(dateFormat.format(datetime.time))
 
             date = LocalDate(datetime.year, datetime.month + 1, datetime.dayOfMonth)
@@ -273,6 +273,9 @@ class TakeMed : Fragment() {
         return date
     }
 
+    /**
+     * Do not delete. Keep it safe for future reference
+     * */
     private fun triggerAlarm(){
         // Get AlarmManager instance
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -310,5 +313,23 @@ class TakeMed : Fragment() {
         val sender = PendingIntent.getBroadcast(context, requestCode, getAlarmIntent(), 0)
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(sender)
+    }
+
+    /**
+     * method that schedules the job based on the parameters set
+     * */
+    private fun scheduleJob() {
+        val serviceName = ComponentName(requireContext().packageName, NotificationScheduler::class.java.name)
+
+        val jobBuilder = JobInfo.Builder(JOB_ID, serviceName)
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE)
+            .setPeriodic(ONE_DAY_INTERVAL)
+            .setRequiresCharging(false)
+
+        mScheduler.schedule(jobBuilder.build())
+    }
+
+    fun cancelJobs() {
+        mScheduler.cancel(JOB_ID)
     }
 }

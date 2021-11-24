@@ -1,4 +1,4 @@
-package com.deemiensa.dewormingmanager.viewpager
+package com.deemiensa.dewormingmanager.activities
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
-import com.deemiensa.dewormingmanager.activities.AlarmReceiver
 import com.deemiensa.dewormingmanager.R
 import com.deemiensa.dewormingmanager.offline.SharedPref
 import com.deemiensa.dewormingmanager.viewpager.ui.main.SectionsPagerAdapter

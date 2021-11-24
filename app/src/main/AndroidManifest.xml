@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".viewpager.Dewormer"
+            android:name=".activities.Dewormer"
             android:label="@string/title_activity_dewormer"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -34,7 +34,12 @@
         <receiver
             android:name=".activities.AlarmReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true"/>
+
+        <service
+            android:name=".services.NotificationScheduler"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
     </application>
 
 </manifest>
