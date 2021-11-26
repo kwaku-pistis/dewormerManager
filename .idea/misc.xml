@@ -10,7 +10,8 @@
         <entry key="app/src/main/res/layout/dialog_layout.xml" value="0.1585144927536232" />
         <entry key="app/src/main/res/layout/fragment_dewormer.xml" value="0.1585144927536232" />
         <entry key="app/src/main/res/layout/fragment_history.xml" value="0.1585144927536232" />
-        <entry key="app/src/main/res/layout/fragment_take_med.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/fragment_take_med.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/history_layout.xml" value="0.16945288753799392" />
       </map>
     </option>
   </component>

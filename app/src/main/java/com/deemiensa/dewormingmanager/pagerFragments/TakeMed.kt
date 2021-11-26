@@ -40,7 +40,7 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.utils.ColorTemplate.COLORFUL_COLORS
+import com.github.mikephil.charting.utils.ColorTemplate.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_take_med.*
 import org.jetbrains.anko.doAsync
@@ -159,11 +159,12 @@ class TakeMed : Fragment() {
 
         pieChart.setUsePercentValues(false)
         pieChart.description.isEnabled = false
+        pieChart.holeRadius = 40f
         pieChart.setExtraOffsets(5f, 10f, 5f, 5f)
 
         pieChart.dragDecelerationFrictionCoef = 0.99f
-        pieChart.isDrawHoleEnabled = false
-        pieChart.transparentCircleRadius = 61f
+        pieChart.isDrawHoleEnabled = true
+        pieChart.transparentCircleRadius = 50f
         pieChart.animateY(1000, Easing.EaseInOutCirc)
 
         if (daysLeft >= 0){
@@ -171,7 +172,7 @@ class TakeMed : Fragment() {
             textView.isVisible = false
 
             val pieValues = arrayListOf<PieEntry>()
-            pieValues.add(PieEntry(daysLeft.toFloat(),  "days more"))
+            pieValues.add(PieEntry(daysLeft.toFloat(),  "days left"))
             pieValues.add(PieEntry(daysPast.toFloat(), "days past"))
 
             val pieDataSet = PieDataSet(pieValues, "Days")
@@ -189,7 +190,6 @@ class TakeMed : Fragment() {
 
     private fun calculateDays(): Long {
         val currentDate = Date()
-//        val dateTaken = sharedPref.lastdatetaken
 
         val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
         val date = sharedPref.unFormattedNextDate
@@ -210,7 +210,6 @@ class TakeMed : Fragment() {
                 pieChart.isVisible = false
             }
 
-            //return (days.toDouble() / total_days.toDouble()) * 100.00
             return days
         }
 
@@ -221,8 +220,7 @@ class TakeMed : Fragment() {
         if (date != null) {
             val dateFormat = SimpleDateFormat("EEE, d MMM yyyy", Locale.UK)
             val parseDate = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
-//            val nextDate = date.plusDays(90)
-            val nextDate = date.plusDays(2)
+            val nextDate = date.plusDays(90)
             val parsedDate = parseDate.parse(nextDate.toString())
 
             formattedDate = dateFormat.format(parsedDate!!)
@@ -238,7 +236,7 @@ class TakeMed : Fragment() {
 
             // convert date text to local date
             val localDate = LocalDate(defaultDate)
-            val nextDate = localDate.plusDays(2)
+            val nextDate = localDate.plusDays(90)
             val parsedDate = parseDate.parse(nextDate.toString())
 
             formattedDate = dateFormat.format(parsedDate!!)
