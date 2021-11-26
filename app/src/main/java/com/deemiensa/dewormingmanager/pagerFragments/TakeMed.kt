@@ -161,7 +161,6 @@ class TakeMed : Fragment() {
         pieChart.description.isEnabled = false
         pieChart.holeRadius = 40f
         pieChart.setExtraOffsets(5f, 10f, 5f, 5f)
-
         pieChart.dragDecelerationFrictionCoef = 0.99f
         pieChart.isDrawHoleEnabled = true
         pieChart.transparentCircleRadius = 50f
@@ -174,15 +173,13 @@ class TakeMed : Fragment() {
             val pieValues = arrayListOf<PieEntry>()
             pieValues.add(PieEntry(daysLeft.toFloat(),  "days left"))
             pieValues.add(PieEntry(daysPast.toFloat(), "days past"))
-
             val pieDataSet = PieDataSet(pieValues, "Days")
             pieDataSet.sliceSpace = 3f
             pieDataSet.selectionShift = 5f
             pieDataSet.colors = COLORFUL_COLORS.toMutableList()
-
             val pieData = PieData(pieDataSet)
             pieData.setValueTextSize(10f)
-            pieData.setValueTextColor(Color.YELLOW)
+            pieData.setValueTextColor(Color.WHITE)
 
             pieChart.data = pieData
         }
